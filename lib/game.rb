@@ -6,22 +6,25 @@ class Game
     @display = display
   end
 
-  def feed_back(response)
-    player_code = response.chars
-  end
-
   def check_matches(response, perfect_matches)
     code = @computer.code
     player_code = response.chars
-    matches = []
+    matches = [[], []]
+    matches_temp = []
     code.each_with_index do |char, index|
       player_code.each_with_index do |inner_char, inner_index|
-        if char == inner_char && perfect_matches.find_index(inner_index).nil? && matches.find_index(inner_index).nil?
-          matches.push(inner_index)
+        unless char == inner_char && perfect_matches.find_index(inner_index).nil? && perfect_matches.find_index(index).nil? && matches[0].find_index(inner_index).nil? && matches[1].find_index(index).nil?
+          next
         end
+
+        matches[0].push(inner_index)
+        matches[1].push(index)
+        matches_temp.push(index)
+        break
       end
     end
-    puts "Matches : #{matches}"
+    @display.feedback(matches_temp, perfect_matches, player_code)
+    true if player_code == code
   end
 
   def check_perfect_matches(response)
@@ -33,12 +36,11 @@ class Game
 
       perfect_matches.push(num)
     end
-    puts "Perfect Matches : #{perfect_matches}"
     perfect_matches
   end
 
   def start
-    puts "Do you want to be a code BREAKER or MAKER? \nEnter '1' to be a MAKER\nEnter '2' to be a BREAKER"
+    puts "Do you want to be a code BREAKER or MAKER? \nEnter '1' to be a BREAKER\nEnter '2' to be a MAKER"
     user_input = gets.chomp until %w[1 2].include?(user_input)
     if user_input == "1"
       code_breaker
@@ -48,10 +50,13 @@ class Game
   end
 
   def code_breaker
+    win = false
     10.times do |number|
+      break if win == true
+
       puts "Turn ##{number + 1}: Type in four numbers (1-6) to guess code, or 'q' to quit game."
       player_guess = gets.chomp
-      check_matches(player_guess, check_perfect_matches(player_guess))
+      win = check_matches(player_guess, check_perfect_matches(player_guess))
     end
   end
 
