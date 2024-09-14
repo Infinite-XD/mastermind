@@ -23,7 +23,7 @@ class Game
         break
       end
     end
-    @display.feedback(matches_temp, perfect_matches, player_code)
+    @display.feedback(matches_temp, perfect_matches, player_code) if player_code != code
     true if player_code == code
   end
 
@@ -42,7 +42,7 @@ class Game
   def start
     puts "Do you want to be a code BREAKER or MAKER? \nEnter '1' to be a BREAKER\nEnter '2' to be a MAKER"
     user_input = gets.chomp until %w[1 2].include?(user_input)
-    if user_input == "1"
+    if user_input == '1'
       code_breaker
     else
       code_maker
@@ -58,6 +58,7 @@ class Game
       player_guess = gets.chomp
       win = check_matches(player_guess, check_perfect_matches(player_guess))
     end
+    @display.final_feedback(win)
   end
 
   def code_maker

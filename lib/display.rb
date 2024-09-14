@@ -1,5 +1,7 @@
-require "colorize"
-require "colorized_string"
+# frozen_string_literal: true
+
+require 'colorize'
+require 'colorized_string'
 # Display
 class Display
   def initialize(computer)
@@ -7,7 +9,7 @@ class Display
   end
 
   def title_screen
-    puts "Welcome to Mastermind."
+    puts 'Welcome to Mastermind.'
   end
 
   def feedback(matches, perfect_matches, user_input)
@@ -18,5 +20,11 @@ class Display
   def color(user_input)
     colors = %i[red green yellow light_blue light_magenta light_cyan gray]
     user_input.each { |word| print word.colorize(color: :black, background: colors[word.to_i - 1]) }
+  end
+
+  def final_feedback(victory)
+    puts 'You win!' if victory == true
+
+    puts 'Your out of tries.\nYou lose.' if victory == false
   end
 end
