@@ -62,5 +62,7 @@ class Game
   end
 
   def code_maker
+    puts "Enter your code.\n"
+    player_code = gets.chomp
   end
 end

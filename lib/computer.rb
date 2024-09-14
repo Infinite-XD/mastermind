@@ -6,4 +6,9 @@ class Computer
   def initialize(code = Array.new(4) { CODES.sample })
     @code = code
   end
+
+  def break_code
+    candidate_codes = Array(1111..6666)
+    p candidate_codes
+  end
 end
