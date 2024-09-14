@@ -6,8 +6,8 @@ class Game
     @display = display
   end
 
-  def check_matches(response, perfect_matches)
-    code = @computer.code
+  def self.check_matches(response, perfect_matches, comp_code = @computer.code)
+    code = comp_code
     player_code = response.chars
     matches = [[], []]
     matches_temp = []
@@ -23,13 +23,14 @@ class Game
         break
       end
     end
-    @display.feedback(matches_temp, perfect_matches, player_code) if player_code != code
-    true if player_code == code
+    Display.feedback(matches_temp, perfect_matches, player_code) if player_code != code
+    [true, [matches_temp, perfect_matches]] if player_code == code
+    [false, [matches_temp, perfect_matches]]
   end
 
-  def check_perfect_matches(response)
+  def self.check_perfect_matches(response, comp_code = @computer.code)
     player_code = response.chars
-    code = @computer.code
+    code = comp_code
     perfect_matches = []
     4.times do |num|
       next unless code[num] == player_code[num]
@@ -50,19 +51,20 @@ class Game
   end
 
   def code_breaker
-    win = false
+    win = [false]
     10.times do |number|
-      break if win == true
+      break if win[0] == true
 
       puts "Turn ##{number + 1}: Type in four numbers (1-6) to guess code, or 'q' to quit game."
       player_guess = gets.chomp
-      win = check_matches(player_guess, check_perfect_matches(player_guess))
+      win = Game.check_matches(player_guess, Game.check_perfect_matches(player_guess))
     end
-    @display.final_feedback(win)
+    Display.final_feedback(win)
   end
 
   def code_maker
     puts "Enter your code.\n"
-    player_code = gets.chomp
+    player_code = gets.chomp.chars
+    @computer.break_code(player_code)
   end
 end
