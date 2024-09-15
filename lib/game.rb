@@ -64,5 +64,39 @@ class Game
   def code_maker
     puts "Enter your code.\n"
     player_code = gets.chomp
+    win = @computer.break_code(player_code)
+    puts 'You lose!' if win[0] == true
+  end
+
+  def self.check_comp_matches(comp_code, player_code, perfect_matches)
+    code = comp_code.to_s.chars
+    player_code = player_code.to_s.chars
+    matches = [[], []]
+    matches_temp = []
+    code.each_with_index do |char, index|
+      player_code.each_with_index do |inner_char, inner_index|
+        unless char == inner_char && perfect_matches.find_index(inner_index).nil? && perfect_matches.find_index(index).nil? && matches[0].find_index(inner_index).nil? && matches[1].find_index(index).nil?
+          next
+        end
+
+        matches[0].push(inner_index)
+        matches[1].push(index)
+        matches_temp.push(index)
+        break
+      end
+    end
+    [matches_temp.length, perfect_matches.length]
+  end
+
+  def self.check_comp_perfect_matches(comp_code, response)
+    player_code = response.to_s.chars
+    code = comp_code.to_s.chars
+    perfect_matches = []
+    4.times do |num|
+      next unless code[num] == player_code[num]
+
+      perfect_matches.push(num)
+    end
+    perfect_matches
   end
 end
